@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js" integrity="sha512-E8QSvWZ0eCLGk4km3hxSsNmGWbLtSCSUcewDQPQWZF6pEU8GlT8a5fF32wOl1i8ftdMhssTrF/OhyGWwonTcXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>National Data Security Search Engine</title>
+
+    
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="National Data Security Engine" />
+    <meta property="og:description" content="National Data Security Engine to find leaked credentials before the attacker taking over government websites" />
+    <meta property="og:site_name" content="Database Search" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Language" content="en" />
+
+    <meta name="apple-mobile-web-app-status-bar" content="#000000" />
+    <meta name="theme-color" content="#000000" />
+
+    <style>
+        html,
+        body,
+        #app,
+        v-main__wrap {
+            background-color: rgb(6, 6, 6);
+        }
+
+        .logo {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-top: 5%;
+            text-align: center;
+        
+        }
+
+        .logo .highlight {
+            color: #1DD75B;
+        }
+
+        .search-container {
+            margin-top: 2%;
+            padding: 1rem;
+            background-color: transparent;
+            margin-top: 10%;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background-color: #1c1c1c;
+            border-radius: 8px;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-input {
+            width: 80%;
+            margin-right: 10px;
+            border: none;
+            background-color: transparent;
+            color: white;
+        }
+
+        .search-button {
+            background-color: #1DD75B;
+            color: white;
+        }
+
+        .query-options {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        .query-option {
+            flex: 1;
+            margin-right: 10px;
+            background-color: #1c1c1c;
+            border-radius: 8px;
+            padding: 0.5rem;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .query-option:hover,
+        .query-option.active {
+            background-color: #2b2b2b;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <v-app>
+            <v-main>
+                <v-container flex pa-0>
+                    <div class="logo">
+                        NATIONAL <span class="highlight">DATAGUARD</span>
+                    </div>
+
+                    <!-- Align card to center of page-->
+                    <v-card elevation="0" class="search-container">
+                        <div class="search-box">
+                            <v-text-field class="search-input" v-model="queries[0].value" :label="selectedFieldLabel"></v-text-field>
+                            <v-btn @click="buildAndSendQuery" class="search-button" elevation="0" text><v-icon>mdi-account-search</v-icon></v-btn>
+                        </div>
+
+                        <div class="query-options">
+                            <div v-for="option in queryOptions" :key="option" :class="{ 'query-option': true, 'active': selectedField === option }" @click="setSelectedField(option)">
+                                {{ option }}
+                            </div>
+                        </div>
+
+                        
+
+                    </v-card>
+
+                    <div style="margin-left: 10px">
+                        <p style="margin-top: 5%">Example Queries:</p>
+                        <p><a href="/records?firstName=Troy">Name:abraham </a></p>
+                        <p><a href="/records?emails=admin@*.com">Email: admin@*.com</a></p>
+                        <p><a href="/records?usernames=admin">Username: admin</a></p>
+                    </div>
+                </v-container>
+            </v-main>
+        </v-app>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            vuetify: new Vuetify({
+                theme: { dark: true },
+                // Mdi icons
+                icons: {
+                    iconfont: 'mdi',
+                },
+            }),
+            data: () => ({
+                queries: [
+                    { field: 'First Name', value: '' },
+                ],
+                exact: false,
+                selectedField: 'First Name',
+                queryOptions: [
+                    'First Name',
+                    'Last Name',
+                    'Email',
+                    'Username',
+                    'Password',
+                    'Domain',
+                    'Address',
+                ],
+                queryFieldMap: {
+                    'First Name': 'firstName',
+                    'Last Name': 'lastName',
+                    'Email': 'emails',
+                    'Username': 'usernames',
+                    'Password': 'passwords',
+                    'Domain': 'domain',
+                    'Address': 'address',
+                }
+            }),
+            computed: {
+                selectedFieldLabel() {
+                    return this.selectedField !== 'Password' ? `Search ${this.selectedField}...` : 'Search Password...';
+                }
+            },
+            methods: {
+                addQuery() {
+                    // Limit 5 queries
+                    if (this.queries.length >= 5) {
+                        alert('Max 5 fields per query');
+                    } else {
+                        this.queries.push({ field: 'First Name', value: '' });
+                    }
+                },
+                isMobile() {
+                    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                },
+                buildAndSendQuery() {
+                    let query = '';
+                    this.queries.forEach((q, idx) => {
+                        const field = this.queryFieldMap[q.field];
+                        const value = q.value;
+                        if (q.not) {
+                            if (idx === 0) {
+                                query += `not${field}=${q.value}`;
+                            } else {
+                                query += `&not${field}=${q.value}`;
+                            }
+                        } else {
+                            if (idx === 0) {
+                                query += `${field}=${q.value}`;
+                            } else {
+                                query += `&${field}=${q.value}`;
+                            }
+                        }
+                        if (q.extendedSearch && field === "passwords") {
+                            // Add code related to extended search if needed
+                        }
+                        if (this.exact) {
+                            query += `&exact=true`;
+                        }
+                    });
+                    // Send query
+                    window.location.href = `/records?${query}`;
+                },
+                setSelectedField(option) {
+                    this.queries[0].field = option;
+                    this.selectedField = option;
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
+
