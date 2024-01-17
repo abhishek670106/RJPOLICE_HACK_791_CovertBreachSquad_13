@@ -5,7 +5,10 @@
  1. Install Docker with Docker Compose
  2. Run this command  `docker compose build; docker compose up`
  3. Visit this url `http://127.0.0.1:3000`
-
+### Minimum Requirment
+1. 16 GB ram
+2. 32 GB ROM
+3. 4 core processor
 ## Problem Statement
 
 Amidst the rising tide of cyber threats, police department websites in India are facing an imminent risk of data breaches, potentially compromising sensitive information. The unique challenge lies in proactively identifying and mitigating potential vulnerabilities within these websites, with a specific focus on securing email and username credentials. The objective is to implement a robust monitoring system that scans the dark web and analyzes stealer logs to detect compromised police department email and username combinations. This preventive approach aims to provide timely alerts to the dedicated Cyber Crime Department, responsible for safeguarding police websites, enabling them to take swift action against unauthorized access and mitigate the risk of account takeover.
