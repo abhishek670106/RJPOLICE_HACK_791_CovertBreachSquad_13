@@ -116,7 +116,7 @@
 
                         <div class="query-options">
                             <div v-for="option in queryOptions" :key="option" :class="{ 'query-option': true, 'active': selectedField === option }" @click="setSelectedField(option)">
-                                {{ option }}
+                              <font color="white">{{ option }}</font>
                             </div>
                         </div>
 
@@ -126,7 +126,7 @@
 
                     <div style="margin-left: 10px">
                         <p style="margin-top: 5%">Example Queries:</p>
-                        <p><a href="/records?firstName=Troy">Name:abraham </a></p>
+                        <p><a href="/records?domain=*.gov.in">Domain:*.gov.in </a></p>
                         <p><a href="/records?emails=admin@*.com">Email: admin@*.com</a></p>
                         <p><a href="/records?usernames=admin">Username: admin</a></p>
                     </div>
@@ -140,34 +140,34 @@
             el: '#app',
             vuetify: new Vuetify({
                 theme: { dark: true },
-                // Mdi icons
+                // ion icons
                 icons: {
-                    iconfont: 'mdi',
+                    iconfont: 'ion',
                 },
             }),
             data: () => ({
                 queries: [
-                    { field: 'First Name', value: '' },
+                    { field: 'Domain', value: '' },
                 ],
                 exact: false,
-                selectedField: 'First Name',
+                selectedField: 'Domain',
                 queryOptions: [
-                    'First Name',
-                    'Last Name',
+                    'Domain',
                     'Email',
                     'Username',
                     'Password',
-                    'Domain',
-                    'Address',
+                    'First Name',
+                    'Last Name',
+                    'FQDN',
                 ],
                 queryFieldMap: {
-                    'First Name': 'firstName',
-                    'Last Name': 'lastName',
-                    'Email': 'emails',
+                    'Domain': 'domain',
+                    'Email': 'emails', 
                     'Username': 'usernames',
                     'Password': 'passwords',
-                    'Domain': 'domain',
-                    'Address': 'address',
+                    'First Name': 'firstName',
+                    'Last Name': 'lastName',                  
+                    'FQDN': 'address',
                 }
             }),
             computed: {
@@ -229,4 +229,3 @@
 </body>
 
 </html>
-
