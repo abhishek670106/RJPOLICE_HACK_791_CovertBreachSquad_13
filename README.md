@@ -1,7 +1,7 @@
-# Police Department Websites Cybersecurity Enhancement
+# Government Department Websites Cybersecurity Enhancement
 
 
-### Quickstart
+### Installation Guide
  1. Install Docker with Docker Compose
  2. Run this command  `docker compose build; docker compose up`
  3. Visit this url `http://127.0.0.1:3000`
